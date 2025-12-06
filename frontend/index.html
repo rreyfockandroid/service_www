@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moja Strona</title>
+    <title>Fizyka - Szkoła Podstawowa i Średnia</title>
     <style>
         * {
             margin: 0;
@@ -15,6 +15,27 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
         }
 
         nav {
@@ -24,60 +45,160 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         nav ul {
             list-style: none;
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 1rem;
             flex-wrap: wrap;
+            padding: 0 1rem;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background 0.3s;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
         }
 
         nav a:hover, nav a.active {
-            background: #34495e;
+            background: #667eea;
+            transform: translateY(-2px);
         }
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+            margin: 2rem auto;
+            padding: 0 2rem;
         }
 
         section {
-            margin: 3rem 0;
-            padding: 2rem;
+            margin: 2rem 0;
+            padding: 2.5rem;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
 
         h1 {
-            color: #2c3e50;
+            color: #667eea;
             margin-bottom: 1.5rem;
             font-size: 2.5rem;
-            border-bottom: 3px solid #3498db;
+            border-bottom: 3px solid #667eea;
             padding-bottom: 0.5rem;
         }
 
         h2 {
             color: #2c3e50;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        .level-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .level-filter button {
+            padding: 0.6rem 1.5rem;
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .level-filter button:hover {
+            background: #bdc3c7;
+        }
+
+        .level-filter button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .article-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .article-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .article-card .level-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: #667eea;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .article-detail {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .article-detail h2 {
+            color: #667eea;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
             margin-bottom: 1rem;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #7f8c8d;
         }
 
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             color: #7f8c8d;
+            font-size: 1.2rem;
         }
 
         form {
@@ -88,11 +209,17 @@
         }
 
         input, textarea {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
             font-size: 1rem;
             font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
         textarea {
@@ -100,24 +227,25 @@
             resize: vertical;
         }
 
-        button {
-            padding: 0.75rem 1.5rem;
-            background: #3498db;
+        button[type="submit"] {
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
             cursor: pointer;
             transition: background 0.3s;
+            font-weight: 600;
         }
 
-        button:hover {
-            background: #2980b9;
+        button[type="submit"]:hover {
+            background: #5568d3;
         }
 
         .message {
             padding: 1rem;
-            border-radius: 4px;
+            border-radius: 6px;
             margin: 1rem 0;
         }
 
@@ -132,9 +260,22 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
+        .formula {
+            background: #f0f0f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1>🔬 Portal Fizyki</h1>
+        <p>Fizyka dla szkół podstawowych i średnich w Polsce</p>
+    </header>
+
     <nav>
         <ul id="menu"></ul>
     </nav>
@@ -146,6 +287,8 @@
     <script>
         const API_URL = 'http://localhost:8000/api';
         let sections = [];
+        let articles = [];
+        let currentView = 'section';
 
         async function loadSections() {
             try {
@@ -167,6 +310,7 @@
         }
 
         async function loadSection(slug) {
+            currentView = 'section';
             document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
             document.querySelector(`nav a[href="#${slug}"]`)?.classList.add('active');
 
@@ -179,6 +323,15 @@
                 
                 if (slug === 'kontakt') {
                     renderContactSection(section);
+                } else if (slug === 'artykuly') {
+                    await loadArticles();
+                    renderArticlesSection(section);
+                } else if (slug === 'szkola-podstawowa') {
+                    await loadArticles('podstawowa');
+                    renderLevelSection(section, 'podstawowa');
+                } else if (slug === 'szkola-srednia') {
+                    await loadArticles('srednia');
+                    renderLevelSection(section, 'srednia');
                 } else {
                     renderSection(section);
                 }
@@ -187,24 +340,116 @@
             }
         }
 
+        async function loadArticles(level = null) {
+            const url = level ? `${API_URL}/articles?level=${level}` : `${API_URL}/articles`;
+            const response = await fetch(url);
+            articles = await response.json();
+        }
+
         function renderSection(section) {
             document.getElementById('content').innerHTML = `
                 <section>
                     <h1>${section.title}</h1>
-                    <p>${section.content}</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8;">${section.content}</p>
                 </section>
             `;
+        }
+
+        function renderLevelSection(section, level) {
+            const levelArticles = articles.filter(a => a.level === level);
+            const levelName = level === 'podstawowa' ? 'Szkoły Podstawowej' : 'Szkoły Średniej';
+            
+            document.getElementById('content').innerHTML = `
+                <section>
+                    <h1>${section.title}</h1>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">${section.content}</p>
+                    
+                    <h2>📚 Artykuły dla ${levelName} (${levelArticles.length})</h2>
+                    <div class="articles-grid">
+                        ${levelArticles.map(article => `
+                            <div class="article-card" onclick="loadArticleDetail('${article.slug}')">
+                                <h3>${article.title}</h3>
+                                <p style="color: #666; margin-top: 0.5rem;">${article.content.substring(0, 100)}...</p>
+                                <span class="level-badge">${article.level === 'podstawowa' ? 'Podstawowa' : 'Średnia'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderArticlesSection(section) {
+            document.getElementById('content').innerHTML = `
+                <section>
+                    <h1>${section.title}</h1>
+                    <p style="font-size: 1.1rem; line-height: 1.8;">${section.content}</p>
+                    
+                    <div class="level-filter">
+                        <button class="active" onclick="filterArticles('all')">Wszystkie (${articles.length})</button>
+                        <button onclick="filterArticles('podstawowa')">Szkoła Podstawowa (${articles.filter(a => a.level === 'podstawowa').length})</button>
+                        <button onclick="filterArticles('srednia')">Szkoła Średnia (${articles.filter(a => a.level === 'srednia').length})</button>
+                    </div>
+                    
+                    <div class="articles-grid" id="articlesGrid">
+                        ${renderArticleCards(articles)}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderArticleCards(articlesToShow) {
+            return articlesToShow.map(article => `
+                <div class="article-card" onclick="loadArticleDetail('${article.slug}')">
+                    <h3>${article.title}</h3>
+                    <p style="color: #666; margin-top: 0.5rem;">${article.content.substring(0, 100)}...</p>
+                    <span class="level-badge">${article.level === 'podstawowa' ? 'Podstawowa' : 'Średnia'}</span>
+                </div>
+            `).join('');
+        }
+
+        function filterArticles(level) {
+            document.querySelectorAll('.level-filter button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const filtered = level === 'all' ? articles : articles.filter(a => a.level === level);
+            document.getElementById('articlesGrid').innerHTML = renderArticleCards(filtered);
+        }
+
+        async function loadArticleDetail(slug) {
+            currentView = 'article';
+            const content = document.getElementById('content');
+            content.innerHTML = '<div class="loading">Ładowanie artykułu...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/articles/${slug}`);
+                const article = await response.json();
+                
+                document.getElementById('content').innerHTML = `
+                    <section>
+                        <button class="back-button" onclick="history.back()">← Powrót</button>
+                        <div class="article-detail">
+                            <h2>${article.title}</h2>
+                            <span class="level-badge" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                ${article.level === 'podstawowa' ? 'Szkoła Podstawowa' : 'Szkoła Średnia'}
+                            </span>
+                            <p style="font-size: 1.1rem; line-height: 1.9; margin-top: 1.5rem; white-space: pre-line;">${article.content}</p>
+                        </div>
+                    </section>
+                `;
+            } catch (error) {
+                content.innerHTML = '<div class="message error">Nie udało się załadować artykułu</div>';
+            }
         }
 
         function renderContactSection(section) {
             document.getElementById('content').innerHTML = `
                 <section>
                     <h1>${section.title}</h1>
-                    <p>${section.content}</p>
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">${section.content}</p>
                     <form id="contactForm">
                         <input type="text" name="name" placeholder="Imię i nazwisko" required>
                         <input type="email" name="email" placeholder="Email" required>
-                        <textarea name="message" placeholder="Wiadomość" required></textarea>
+                        <textarea name="message" placeholder="Twoje pytanie lub wiadomość" required></textarea>
                         <button type="submit">Wyślij wiadomość</button>
                     </form>
                     <div id="formMessage"></div>
@@ -228,7 +473,7 @@
                 });
 
                 if (response.ok) {
-                    messageDiv.innerHTML = '<div class="message success">Wiadomość została wysłana!</div>';
+                    messageDiv.innerHTML = '<div class="message success">✓ Wiadomość została wysłana! Odpowiemy tak szybko jak to możliwe.</div>';
                     e.target.reset();
                 } else {
                     messageDiv.innerHTML = '<div class="message error">Wystąpił błąd podczas wysyłania</div>';

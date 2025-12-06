@@ -28,7 +28,7 @@ class ContactForm(BaseModel):
 
 @app.get("/")
 def root():
-    return {"message": "Backend API działa"}
+    return {"message": "Backend API fizyki działa"}
 
 @app.get("/api/sections")
 def get_sections():
@@ -51,6 +51,31 @@ def get_section(slug: str):
     if not section:
         raise HTTPException(status_code=404, detail="Sekcja nie znaleziona")
     return section
+
+@app.get("/api/articles")
+def get_articles(level: str = None):
+    conn = get_db()
+    cur = conn.cursor()
+    if level:
+        cur.execute("SELECT * FROM articles WHERE level = %s ORDER BY id", (level,))
+    else:
+        cur.execute("SELECT * FROM articles ORDER BY id")
+    articles = cur.fetchall()
+    cur.close()
+    conn.close()
+    return articles
+
+@app.get("/api/articles/{slug}")
+def get_article(slug: str):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM articles WHERE slug = %s", (slug,))
+    article = cur.fetchone()
+    cur.close()
+    conn.close()
+    if not article:
+        raise HTTPException(status_code=404, detail="Artykuł nie znaleziony")
+    return article
 
 @app.post("/api/contact")
 def submit_contact(form: ContactForm):
