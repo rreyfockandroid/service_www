@@ -25,12 +25,23 @@ CREATE TABLE IF NOT EXISTS contacts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO sections (title, content, slug, order_num) VALUES
 ('Strona główna', 'Witaj w serwisie poświęconym fizyce! Znajdziesz tu materiały zgodne z podstawą programową dla szkół podstawowych i średnich w Polsce. Odkryj fascynujący świat fizyki - od podstawowych praw ruchu po tajemnice kwantów.', 'strona-glowna', 1),
 ('Szkoła podstawowa', 'Podstawy fizyki dla klas 7-8. Dowiedz się o ruchu, energii, elektryczności i magnetyzmie w sposób przystępny i ciekawy. Materiały zgodne z podstawą programową MEN.', 'szkola-podstawowa', 2),
 ('Szkoła średnia', 'Zaawansowane zagadnienia fizyki dla szkół średnich. Mechanika, termodynamika, elektryczność, optyka, fizyka atomowa i współczesna. Przygotowanie do matury i olimpiad.', 'szkola-srednia', 3),
 ('Artykuły', 'Baza wiedzy - artykuły pogrupowane według dziedzin fizyki. Każdy artykuł zawiera wyjaśnienia, wzory i przykłady dostosowane do poziomu nauczania.', 'artykuly', 4),
 ('Kontakt', 'Masz pytania? Potrzebujesz wyjaśnienia trudnego zagadnienia? Skontaktuj się z nami - chętnie pomożemy!', 'kontakt', 5);
+
+INSERT INTO users (username, password_hash, is_admin) VALUES
+('admin', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5uyT3MKaZ4D3i', true);
 
 INSERT INTO articles (title, content, slug, section_id, level) VALUES
 ('Ruch jednostajny prostoliniowy', 'Ruch jednostajny prostoliniowy to ruch, w którym ciało porusza się po linii prostej ze stałą prędkością. Prędkość definiujemy jako stosunek przebytej drogi do czasu: v = s/t. W ruchu jednostajnym prostoliniowym prędkość nie zmienia się - ciało pokonuje równe odległości w równych odstępach czasu. Przykłady: samochód jadący autostradą ze stałą prędkością 100 km/h, pocisk kosmiczny poruszający się w próżni.', 'ruch-jednostajny', 2, 'podstawowa'),

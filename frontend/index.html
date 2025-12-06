@@ -38,6 +38,26 @@
             font-size: 1.1rem;
         }
 
+        .auth-section {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .auth-section button {
+            padding: 0.5rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0 0.5rem;
+        }
+
+        .auth-section button:hover {
+            background: #5568d3;
+        }
+
         nav {
             background: #2c3e50;
             color: white;
@@ -99,6 +119,84 @@
             font-size: 1.8rem;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .admin-toolbar {
+            display: none;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .admin-toolbar.active {
+            display: block;
+        }
+
+        .admin-toolbar button {
+            padding: 0.6rem 1.2rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .admin-toolbar button:hover {
+            background: #5568d3;
+        }
+
+        .admin-toolbar button.delete {
+            background: #e74c3c;
+        }
+
+        .admin-toolbar button.delete:hover {
+            background: #c0392b;
+        }
+
         .level-filter {
             display: flex;
             gap: 1rem;
@@ -142,6 +240,7 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .article-card:hover {
@@ -163,6 +262,36 @@
             border-radius: 15px;
             font-size: 0.85rem;
             margin-top: 0.5rem;
+        }
+
+        .article-card .admin-actions {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            gap: 0.5rem;
+        }
+
+        .article-card .admin-actions.active {
+            display: flex;
+        }
+
+        .article-card .admin-actions button {
+            padding: 0.3rem 0.6rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .article-card .admin-actions .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .article-card .admin-actions .delete-btn {
+            background: #e74c3c;
+            color: white;
         }
 
         .article-detail {
@@ -205,10 +334,15 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            max-width: 600px;
         }
 
-        input, textarea {
+        form label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        input, textarea, select {
             padding: 0.8rem;
             border: 2px solid #ddd;
             border-radius: 6px;
@@ -217,7 +351,7 @@
             transition: border 0.3s;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -260,20 +394,15 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
-        .formula {
-            background: #f0f0f0;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <header>
         <h1>🔬 Portal Fizyki</h1>
         <p>Fizyka dla szkół podstawowych i średnich w Polsce</p>
+        <div class="auth-section" id="authSection">
+            <button onclick="showLoginModal()">Logowanie</button>
+        </div>
     </header>
 
     <nav>
@@ -284,11 +413,137 @@
         <div id="content"></div>
     </div>
 
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Logowanie administratora</h2>
+            <form id="loginForm">
+                <label>Nazwa użytkownika:</label>
+                <input type="text" name="username" required>
+                <label>Hasło:</label>
+                <input type="password" name="password" required>
+                <button type="submit">Zaloguj się</button>
+            </form>
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('articleModal')">&times;</span>
+            <h2 id="articleModalTitle">Dodaj artykuł</h2>
+            <form id="articleForm">
+                <input type="hidden" name="article_id" value="">
+                <label>Tytuł:</label>
+                <input type="text" name="title" required>
+                <label>Slug (URL):</label>
+                <input type="text" name="slug" required>
+                <label>Poziom:</label>
+                <select name="level" required>
+                    <option value="podstawowa">Szkoła podstawowa</option>
+                    <option value="srednia">Szkoła średnia</option>
+                </select>
+                <label>Sekcja:</label>
+                <select name="section_id" required>
+                    <option value="2">Szkoła podstawowa</option>
+                    <option value="3">Szkoła średnia</option>
+                    <option value="4">Artykuły</option>
+                </select>
+                <label>Treść:</label>
+                <textarea name="content" rows="10" required></textarea>
+                <button type="submit">Zapisz artykuł</button>
+            </form>
+            <div id="articleMessage"></div>
+        </div>
+    </div>
+
     <script>
         const API_URL = 'http://localhost:8000/api';
         let sections = [];
         let articles = [];
         let currentView = 'section';
+        let isAdmin = false;
+        let authToken = localStorage.getItem('authToken');
+
+        async function checkAuth() {
+            if (!authToken) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/verify`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    isAdmin = data.is_admin;
+                    updateAuthUI(data.username);
+                } else {
+                    localStorage.removeItem('authToken');
+                    authToken = null;
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        function updateAuthUI(username) {
+            const authSection = document.getElementById('authSection');
+            if (isAdmin) {
+                authSection.innerHTML = `
+                    <span style="margin-right: 1rem; color: #666;">👤 ${username}</span>
+                    <button onclick="logout()">Wyloguj</button>
+                `;
+            }
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            authToken = null;
+            isAdmin = false;
+            document.getElementById('authSection').innerHTML = '<button onclick="showLoginModal()">Logowanie</button>';
+            location.reload();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            const messageDiv = document.getElementById('loginMessage');
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    authToken = result.access_token;
+                    isAdmin = result.is_admin;
+                    localStorage.setItem('authToken', authToken);
+                    messageDiv.innerHTML = '<div class="message success">Zalogowano pomyślnie!</div>';
+                    updateAuthUI(data.username);
+                    setTimeout(() => {
+                        closeModal('loginModal');
+                        location.reload();
+                    }, 1000);
+                } else {
+                    messageDiv.innerHTML = `<div class="message error">${result.detail}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="message error">Błąd logowania</div>';
+            }
+        });
 
         async function loadSections() {
             try {
@@ -361,18 +616,15 @@
             
             document.getElementById('content').innerHTML = `
                 <section>
+                    ${isAdmin ? `<div class="admin-toolbar active">
+                        <button onclick="showArticleModal()">➕ Dodaj artykuł</button>
+                    </div>` : ''}
                     <h1>${section.title}</h1>
                     <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">${section.content}</p>
                     
                     <h2>📚 Artykuły dla ${levelName} (${levelArticles.length})</h2>
                     <div class="articles-grid">
-                        ${levelArticles.map(article => `
-                            <div class="article-card" onclick="loadArticleDetail('${article.slug}')">
-                                <h3>${article.title}</h3>
-                                <p style="color: #666; margin-top: 0.5rem;">${article.content.substring(0, 100)}...</p>
-                                <span class="level-badge">${article.level === 'podstawowa' ? 'Podstawowa' : 'Średnia'}</span>
-                            </div>
-                        `).join('')}
+                        ${renderArticleCards(levelArticles)}
                     </div>
                 </section>
             `;
@@ -381,6 +633,9 @@
         function renderArticlesSection(section) {
             document.getElementById('content').innerHTML = `
                 <section>
+                    ${isAdmin ? `<div class="admin-toolbar active">
+                        <button onclick="showArticleModal()">➕ Dodaj artykuł</button>
+                    </div>` : ''}
                     <h1>${section.title}</h1>
                     <p style="font-size: 1.1rem; line-height: 1.8;">${section.content}</p>
                     
@@ -400,6 +655,10 @@
         function renderArticleCards(articlesToShow) {
             return articlesToShow.map(article => `
                 <div class="article-card" onclick="loadArticleDetail('${article.slug}')">
+                    <div class="admin-actions ${isAdmin ? 'active' : ''}">
+                        <button class="edit-btn" onclick="event.stopPropagation(); editArticle(${article.id}, '${article.title}', '${article.content.replace(/'/g, "\\'")}', '${article.level}')">✏️</button>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteArticle(${article.id})">🗑️</button>
+                    </div>
                     <h3>${article.title}</h3>
                     <p style="color: #666; margin-top: 0.5rem;">${article.content.substring(0, 100)}...</p>
                     <span class="level-badge">${article.level === 'podstawowa' ? 'Podstawowa' : 'Średnia'}</span>
@@ -427,6 +686,10 @@
                 document.getElementById('content').innerHTML = `
                     <section>
                         <button class="back-button" onclick="history.back()">← Powrót</button>
+                        ${isAdmin ? `<div class="admin-toolbar active">
+                            <button onclick="editArticle(${article.id}, '${article.title}', '${article.content.replace(/'/g, "\\'")}', '${article.level}')">✏️ Edytuj</button>
+                            <button class="delete" onclick="deleteArticle(${article.id})">🗑️ Usuń</button>
+                        </div>` : ''}
                         <div class="article-detail">
                             <h2>${article.title}</h2>
                             <span class="level-badge" style="font-size: 1rem; padding: 0.5rem 1rem;">
@@ -438,6 +701,92 @@
                 `;
             } catch (error) {
                 content.innerHTML = '<div class="message error">Nie udało się załadować artykułu</div>';
+            }
+        }
+
+        function showArticleModal() {
+            document.getElementById('articleModalTitle').textContent = 'Dodaj artykuł';
+            document.getElementById('articleForm').reset();
+            document.querySelector('input[name="article_id"]').value = '';
+            document.querySelector('input[name="slug"]').disabled = false;
+            document.getElementById('articleModal').classList.add('active');
+        }
+
+        function editArticle(id, title, content, level) {
+            document.getElementById('articleModalTitle').textContent = 'Edytuj artykuł';
+            document.querySelector('input[name="article_id"]').value = id;
+            document.querySelector('input[name="title"]').value = title;
+            document.querySelector('textarea[name="content"]').value = content;
+            document.querySelector('select[name="level"]').value = level;
+            document.querySelector('input[name="slug"]').disabled = true;
+            document.getElementById('articleModal').classList.add('active');
+        }
+
+        document.getElementById('articleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            const messageDiv = document.getElementById('articleMessage');
+            const articleId = data.article_id;
+
+            try {
+                let url = `${API_URL}/articles`;
+                let method = 'POST';
+                let body = {
+                    title: data.title,
+                    content: data.content,
+                    level: data.level
+                };
+
+                if (articleId) {
+                    url = `${API_URL}/articles/${articleId}`;
+                    method = 'PUT';
+                } else {
+                    body.slug = data.slug;
+                    body.section_id = parseInt(data.section_id);
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (response.ok) {
+                    messageDiv.innerHTML = '<div class="message success">Artykuł zapisany!</div>';
+                    setTimeout(() => {
+                        closeModal('articleModal');
+                        location.reload();
+                    }, 1000);
+                } else {
+                    const error = await response.json();
+                    messageDiv.innerHTML = `<div class="message error">${error.detail}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="message error">Błąd zapisu artykułu</div>';
+            }
+        });
+
+        async function deleteArticle(id) {
+            if (!confirm('Czy na pewno chcesz usunąć ten artykuł?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/articles/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    alert('Artykuł usunięty!');
+                    location.reload();
+                } else {
+                    alert('Błąd usuwania artykułu');
+                }
+            } catch (error) {
+                alert('Błąd usuwania artykułu');
             }
         }
 
@@ -483,7 +832,7 @@
             }
         }
 
-        loadSections();
+        checkAuth().then(() => loadSections());
     </script>
 </body>
 </html>
