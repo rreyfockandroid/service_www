@@ -41,7 +41,7 @@ INSERT INTO sections (title, content, slug, order_num) VALUES
 ('Kontakt', 'Masz pytania? Potrzebujesz wyjaśnienia trudnego zagadnienia? Skontaktuj się z nami - chętnie pomożemy!', 'kontakt', 5);
 
 INSERT INTO users (username, password_hash, is_admin) VALUES
-('admin', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5uyT3MKaZ4D3i', true);
+('admin', '$2b$12$yhTdUyaQ25iNSVp0EOARSuq90FbWVig1GtkYNfhyxIVyVzMCxqODS', true);
 
 INSERT INTO articles (title, content, slug, section_id, level) VALUES
 ('Ruch jednostajny prostoliniowy', 'Ruch jednostajny prostoliniowy to ruch, w którym ciało porusza się po linii prostej ze stałą prędkością. Prędkość definiujemy jako stosunek przebytej drogi do czasu: v = s/t. W ruchu jednostajnym prostoliniowym prędkość nie zmienia się - ciało pokonuje równe odległości w równych odstępach czasu. Przykłady: samochód jadący autostradą ze stałą prędkością 100 km/h, pocisk kosmiczny poruszający się w próżni.', 'ruch-jednostajny', 2, 'podstawowa'),
