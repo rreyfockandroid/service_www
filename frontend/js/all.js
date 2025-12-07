@@ -214,6 +214,22 @@ function filterArticles(level) {
     document.getElementById('articlesGrid').innerHTML = renderArticleCards(filtered);
 }
 
+function goBack() {
+    // Jeśli przeszedłeś z artykułu → wróć do sekcji
+    if (currentView === 'article') {
+        const hash = location.hash.replace('#', '');
+        loadSection(hash || 'artykuly');
+        return;
+    }
+
+    // Domyślny fallback
+    if (document.referrer !== "") {
+        history.back();
+    } else {
+        loadSections();
+    }
+}
+
 async function loadArticleDetail(slug) {
     currentView = 'article';
     const content = document.getElementById('content');
@@ -225,7 +241,7 @@ async function loadArticleDetail(slug) {
         
         document.getElementById('content').innerHTML = `
             <section>
-                <button class="back-button" onclick="history.back()">← Powrót</button>
+                <button class="back-button" onclick="goBack()">← Powrót</button>
                 ${isAdmin ? `<div class="admin-toolbar active">
                     <button onclick="editArticle(${article.id}, '${article.title}', '${article.content.replace(/'/g, "\\'")}', '${article.level}')">✏️ Edytuj</button>
                     <button class="delete" onclick="deleteArticle(${article.id})">🗑️ Usuń</button>
