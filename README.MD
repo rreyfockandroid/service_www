@@ -3,7 +3,8 @@
 ```
 projekt/
 ├── docker-compose.yml
-├── init.sql
+├── db/
+│   ├── init.sql
 ├── backend/
 │   ├── Dockerfile
 │   ├── requirements.txt
