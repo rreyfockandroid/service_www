@@ -105,6 +105,7 @@ function renderMenu() {
 }
 
 async function loadSection(slug) {
+    resetPagination();
     currentView = 'section';
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     document.querySelector(`nav a[href="#${slug}"]`)?.classList.add('active');
@@ -131,6 +132,7 @@ async function loadSection(slug) {
             renderSection(section);
         }
     } catch (error) {
+        console.error(error);
         content.innerHTML = '<div class="message error">Nie udało się załadować sekcji</div>';
     }
 }
@@ -151,20 +153,27 @@ function renderSection(section) {
 }
 
 function renderLevelSection(section, level) {
-    const levelArticles = articles.filter(a => a.level === level);
+    const filtered = articles.filter(a => a.level === level);
+    const paginated = paginate(filtered, currentPage, articlesInSection);
     const levelName = level === 'podstawowa' ? 'Szkoły Podstawowej' : 'Szkoły Średniej';
-    
+
     document.getElementById('content').innerHTML = `
         <section>
             ${isAdmin ? `<div class="admin-toolbar active">
                 <button onclick="showArticleModal()">➕ Dodaj artykuł</button>
             </div>` : ''}
+
             <h1>${section.title}</h1>
             <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">${section.content}</p>
-            
-            <h2>📚 Artykuły dla ${levelName} (${levelArticles.length})</h2>
+
+            <h2>📚 Artykuły dla ${levelName}</h2>
+
             <div class="articles-grid">
-                ${renderArticleCards(levelArticles)}
+                ${renderArticleCards(paginated)}
+            </div>
+
+            <div class="pagination">
+                ${renderPagination(filtered.length, level)}
             </div>
         </section>
     `;

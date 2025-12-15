@@ -32,8 +32,11 @@
         }
 
         .auth-section {
-            text-align: center;
-            margin-top: 1rem;
+            position:absolute;
+            text-align:right;
+            top:50px;
+            width:100%;
+            padding-right: 10px;
         }
 
         .auth-section button {
@@ -386,4 +389,23 @@
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+
+        .pagination {
+            margin-top: 2rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            padding: 0.4rem 0.7rem;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #333;
+            color: white;
+            font-weight: bold;
         }
